@@ -29,7 +29,7 @@ class CoinRepositoryImpl @Inject constructor(
 
         } catch (ex: IOException) {
 
-            emit(Resource.Error(message = ex.message ?: "Unknown Error"))
+            emit(Resource.Error(message = ex.message ?: "Check your internet!"))
 
         }
     }
