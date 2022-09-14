@@ -9,5 +9,7 @@ data class CoinDetail(
     val symbol: String,
     val rank: Int,
     val team: List<TeamMember>,
-    val tags: List<String>
+    val tags: List<String>,
+    val isActive: Boolean,
+    val price: Double? = null
 )

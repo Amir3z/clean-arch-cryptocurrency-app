@@ -6,8 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amir.cryptocurrencies.common.Constants.COIN_ID
 import com.amir.cryptocurrencies.common.Resource
 import com.amir.cryptocurrencies.domain.use_case.get_coins.GetCoinsUseCase
+import com.amir.cryptocurrencies.presentation.Screen
 import com.amir.cryptocurrencies.presentation.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -20,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CoinListViewModel @Inject constructor(
     private val getCoinsUseCase: GetCoinsUseCase
-): ViewModel() {
+) : ViewModel() {
 
     private val _state = mutableStateOf(CoinListState())
     val state: State<CoinListState> get() = _state
@@ -33,9 +35,13 @@ class CoinListViewModel @Inject constructor(
     }
 
     fun onEvent(event: CoinListEvent) {
-        when(event) {
+        when (event) {
             is CoinListEvent.OnItemClick -> {
-                sendUiEvent(UiEvent.Navigate(event.id))
+                sendUiEvent(
+                    UiEvent.Navigate(
+                        Screen.CoinDetailScreen.route + "/${event.id}"
+                    )
+                )
             }
             is CoinListEvent.TryToGetDataAgain -> {
                 getCoins()
@@ -45,10 +51,11 @@ class CoinListViewModel @Inject constructor(
 
     private fun getCoins() {
         getCoinsUseCase().onEach { resource ->
-            when(resource) {
+            when (resource) {
                 is Resource.Success -> {
                     _state.value = state.value.copy(
-                        coins = resource.data ?: emptyList()
+                        coins = resource.data ?: emptyList(),
+                        isLoading = false
                     )
                 }
                 is Resource.Loading -> {
@@ -58,18 +65,21 @@ class CoinListViewModel @Inject constructor(
                 }
                 is Resource.Error -> {
                     _state.value = state.value.copy(
-                        error = resource.message ?: "Unknown Error"
+                        error = resource.message ?: "Unknown Error",
+                        isLoading = false
                     )
-                    sendUiEvent(UiEvent.ShowSnackBar(
-                        message = resource.message ?: "Unknown Error",
-                        action = "Try again"
-                    ))
+                    sendUiEvent(
+                        UiEvent.ShowSnackBar(
+                            message = resource.message ?: "Unknown Error",
+                            action = "Try again"
+                        )
+                    )
                 }
             }
         }.launchIn(viewModelScope)
     }
 
-    private fun sendUiEvent(event: UiEvent){
+    private fun sendUiEvent(event: UiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }

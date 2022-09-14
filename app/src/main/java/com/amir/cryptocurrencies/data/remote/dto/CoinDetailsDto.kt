@@ -47,7 +47,8 @@ data class CoinDetailsDto(
             symbol,
             rank,
             team,
-            tags.map { it.name }
+            tags.map { it.name },
+            isActive
         )
     }
 }

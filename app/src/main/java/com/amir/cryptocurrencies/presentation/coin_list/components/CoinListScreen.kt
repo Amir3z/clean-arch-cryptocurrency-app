@@ -17,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.amir.cryptocurrencies.presentation.UiEvent
 import com.amir.cryptocurrencies.presentation.coin_list.CoinListEvent
 import com.amir.cryptocurrencies.presentation.coin_list.CoinListViewModel
+import com.amir.cryptocurrencies.presentation.ui.theme.CryptocurrenciesTheme
 
 @Composable
 fun CoinListScreen(
@@ -52,9 +53,7 @@ fun CoinListScreen(
                         coin = coin,
                         modifier = Modifier.clickable {
                             viewModel.onEvent(
-                                CoinListEvent.OnItemClick(
-                                    coin.id
-                                )
+                                CoinListEvent.OnItemClick(coin.id)
                             )
                         })
                 }

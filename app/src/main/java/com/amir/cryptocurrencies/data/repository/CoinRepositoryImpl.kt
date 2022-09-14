@@ -38,9 +38,9 @@ class CoinRepositoryImpl @Inject constructor(
         emit(Resource.Loading())
 
         try {
-
-            val result = api.getCoin(id).toCoinDetail()
-            emit(Resource.Success(result))
+            val coinDetail = api.getCoin(id).toCoinDetail()
+            val coinPrice = api.getPriceInfo(id).map { it.toPrice() }.first()
+            emit(Resource.Success(coinDetail.copy(price = coinPrice)))
 
         } catch (ex: HttpException) {
 
@@ -48,9 +48,8 @@ class CoinRepositoryImpl @Inject constructor(
 
         } catch (ex: IOException) {
 
-            emit(Resource.Error(message = ex.message ?: "Unknown Error"))
+            emit(Resource.Error(message = ex.message ?: "Check your internet!"))
 
         }
     }
-
 }

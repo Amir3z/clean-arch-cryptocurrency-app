@@ -1,6 +1,5 @@
 package com.amir.cryptocurrencies.presentation.coin_detail
 
-import androidx.compose.runtime.ProvidedValue
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -9,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.amir.cryptocurrencies.common.Constants
 import com.amir.cryptocurrencies.common.Resource
 import com.amir.cryptocurrencies.domain.use_case.get_coin.GetCoinUseCase
-import com.amir.cryptocurrencies.domain.use_case.get_coins.GetCoinsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -18,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CoinDetailViewModel @Inject constructor(
     private val getCoinUseCase: GetCoinUseCase,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = mutableStateOf(CoinDetailState())
@@ -35,7 +33,8 @@ class CoinDetailViewModel @Inject constructor(
             when (resource) {
                 is Resource.Success -> {
                     _state.value = state.value.copy(
-                        coinDetail = resource.data
+                        coinDetail = resource.data,
+                        isLoading = false
                     )
                 }
                 is Resource.Loading -> {
@@ -45,11 +44,11 @@ class CoinDetailViewModel @Inject constructor(
                 }
                 is Resource.Error -> {
                     _state.value = state.value.copy(
-                        error = resource.message ?: "Unknown Error"
+                        error = resource.message ?: "Unknown Error",
+                        isLoading = false
                     )
                 }
             }
         }.launchIn(viewModelScope)
     }
-
 }

@@ -3,6 +3,7 @@ package com.amir.cryptocurrencies.di
 import com.amir.cryptocurrencies.common.Constants
 import com.amir.cryptocurrencies.data.remote.CoinApi
 import com.amir.cryptocurrencies.data.repository.CoinRepositoryImpl
+import com.amir.cryptocurrencies.domain.repository.CoinRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +28,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRepository(api: CoinApi): CoinRepositoryImpl {
+    fun provideRepository(api: CoinApi): CoinRepository {
         return CoinRepositoryImpl(api)
     }
 
